@@ -12,12 +12,12 @@ function handleEmptyInput(numbers) {
 
 // Handles single number input like "5"
 function isSingleNumber(numbers) {
-  return !numbers.includes(",");
+  return !numbers.includes(",") && !numbers.includes("\n");                                                                                                                     
 }
 
 // Converts string to array of numbers
 function parseNumbers(numbers) {
-  return numbers.split(",").map(num => parseInt(num));
+  return numbers.split(/\n|,/).map(num => parseInt(num));
 }
 
 module.exports = add ;

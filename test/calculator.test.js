@@ -23,3 +23,12 @@ test('returns sum for multiple digit in string', () => {
 test('returns sum for an multiple digit seprtaed by comas or delimeter in string', () => {
   expect(add("1,3\n2")).toBe(6);
 });
+
+test('returns sum for an multiple digit seprtaed by comas or delimeter in string', () => {
+  expect(add("3\n2")).toBe(5);
+});
+
+// test for wrong test case
+test('returns sum for an multiple digit seprtaed by comas or delimeter in string', () => {
+  expect(add("\n2,4")).toBe(6);
+});
