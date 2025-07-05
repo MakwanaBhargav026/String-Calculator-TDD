@@ -51,17 +51,18 @@
     });
 
     // test for negative digit
-    test('exception for negative number', () => {
+    test('igoner number greater then 1000', () => {
     expect(add("//*\n1*2*1001")).toBe(3);
     });
 
     // test for any length of custom delimite
-    test('exception for negative number', () => {
+    test('any length delimiter', () => {
      expect(add("//**\n1**2**3")).toBe(6);
      expect(add("//^^^\n1^^^2^^^3")).toBe(6);
     });
 
     // multiple delimiters 
-    test('exception for negative number', () => {
-     expect(add("//*^\n1*2*^3")).toBe(6);
+    test('multiple delimiter', () => {
+     expect(add("//[*][^]\n1*2*^3")).toBe(6);
+     expect(add("//[*][#][^]\n1*2#4^3")).toBe(10);
     });

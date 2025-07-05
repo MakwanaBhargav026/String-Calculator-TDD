@@ -5,7 +5,7 @@ function add(numbers) {
 
   const tokens = isDashDelimiter
     ? smartSplitDashAware(numberString)
-    : numberString.split(delimiter); // already a regex
+    : numberString.split(delimiter); // regex
 
   const parsed = tokens
     .map(n => parseInt(n.trim(), 10))
@@ -17,37 +17,36 @@ function add(numbers) {
   return valid.reduce((sum, n) => sum + n, 0);
 }
 
-//Empty input
 function handleEmptyInput(numbers) {
   return numbers.trim() === "";
 }
 
-//Extract delimiter from string
 function extractDelimiter(input) {
   const defaultDelimiter = /,|\n/;
 
   if (input.startsWith("//")) {
     const parts = input.split("\n");
-    const header = parts[0].slice(2);
-    const rest = parts.slice(1).join("\n");
+    const delimiterLine = parts[0].slice(2);
+    const numberString = parts.slice(1).join("\n");
 
-    // Case: multi-length delimiter: //[***]
-    const bracketMatch = header.match(/^\[(.+)]$/);
-    if (bracketMatch) {
-      const raw = escapeRegExp(bracketMatch[1]);
+    //Case: multiple delimiters like [***][%]
+    const multiMatch = delimiterLine.match(/\[(.+?)\]/g);
+    if (multiMatch) {
+      const escaped = multiMatch
+        .map(d => escapeRegExp(d.slice(1, -1))) // remove [ and ]
+        .join("|");
       return {
-        delimiter: new RegExp(raw),
-        numberString: rest,
-        isDashDelimiter: false
+        delimiter: new RegExp(escaped),
+        numberString,
+        isDashDelimiter: multiMatch.length === 1 && multiMatch[0] === "[-]"
       };
     }
 
-    // Case: single-char delimiter like `//-`
-    const raw = escapeRegExp(header);
+    //Case: single-char delimiter like `//-`
     return {
-      delimiter: new RegExp(raw),
-      numberString: rest,
-      isDashDelimiter: header === "-"
+      delimiter: new RegExp(escapeRegExp(delimiterLine)),
+      numberString,
+      isDashDelimiter: delimiterLine === "-"
     };
   }
 
@@ -58,12 +57,11 @@ function extractDelimiter(input) {
   };
 }
 
-//Escape regex chars
 function escapeRegExp(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-//Custom split logic for `-` delimiter with negative detection
+//For `-` delimiter: treat `--3` as `-3`
 function smartSplitDashAware(str) {
   const result = [];
   let current = '';
@@ -71,7 +69,7 @@ function smartSplitDashAware(str) {
     if (str[i] === '-' && str[i + 1] === '-') {
       if (current) result.push(current);
       current = '-';
-      i++; // skip next -
+      i++; // skip second dash
     } else if (str[i] === '-') {
       if (current) result.push(current);
       current = '';
@@ -83,7 +81,7 @@ function smartSplitDashAware(str) {
   return result;
 }
 
-//Throw if any negative number
+//Throw if any negatives
 function checkForNegatives(numbers) {
   const negatives = numbers.filter(n => n < 0);
   if (negatives.length > 0) {
