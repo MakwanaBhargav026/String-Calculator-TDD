@@ -66,3 +66,9 @@
      expect(add("//[*][^]\n1*2*^3")).toBe(6);
      expect(add("//[*][#][^]\n1*2#4^3")).toBe(10);
     });
+
+    // multiple delimiters with length longer than one char
+    test('multiple delimiters with length longer than one char', () => {
+     expect(add("//[***][%]\n1***2%3")).toBe(6);
+     expect(add("//[***][##][%%%%]\n1***2##4%%%%3")).toBe(10);
+    });
