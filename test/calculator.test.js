@@ -55,3 +55,7 @@ test('exception for negative number', () => {
  expect(add("//*\n1*2*1001")).toBe(3);
 });
 
+// test for any length of custom delimite
+test('exception for negative number', () => {
+ expect(add("//**\n1**2**3")).toBe(6);
+});
