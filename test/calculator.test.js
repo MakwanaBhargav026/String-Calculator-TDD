@@ -41,7 +41,11 @@ test('returns sum for an multiple digit seprtaed by comas or delimeter in string
 });
 
 // test for negative digit
-test('returns sum for an multiple digit seprtaed by comas or delimeter in string', () => {
-  expect(add("1,-2,4")).toBe(1);
+test('expection for negative number', () => {
+  expect(() => add("//-\n4--2--3")).toThrow("negatives not allowed: -2,-3");
+  expect(() => add("4,-2,-3")).toThrow("negatives not allowed: -2,-3");
 });
 
+test('expection for negative number', () => {
+  expect(() => add("-2")).toThrow("negatives not allowed: -2");
+});
