@@ -1,12 +1,8 @@
 function add(numbers) {
   if (handleEmptyInput(numbers)) return 0;
-
   const { delimiter, numberString } = extractDelimiter(numbers);
-
   const numberList = parseNumbers(numberString, delimiter);
-
   checkForNegatives(numberList);
-
   return numberList.reduce((sum, n) => sum + n, 0);
 }
 
