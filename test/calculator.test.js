@@ -1,5 +1,6 @@
 const add = require('../src/calculator');
 
+
 // Test case for empty string.
 test('returns 0 for an empty string', () => {
   expect(add("")).toBe(0);
@@ -16,4 +17,9 @@ test('returns digit for single digit in string', () => {
 
 test('returns sum for multiple digit in string', () => {
   expect(add("5,4,3")).toBe(12);
+});
+
+// Test case of using delimeter as seprater.
+test('returns sum for an multiple digit seprtaed by comas or delimeter in string', () => {
+  expect(add("1,3\n2")).toBe(6);
 });
