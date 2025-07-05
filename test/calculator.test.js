@@ -60,3 +60,8 @@
      expect(add("//**\n1**2**3")).toBe(6);
      expect(add("//^^^\n1^^^2^^^3")).toBe(6);
     });
+
+    // multiple delimiters 
+    test('exception for negative number', () => {
+     expect(add("//*^\n1*2*^3")).toBe(6);
+    });
