@@ -35,5 +35,5 @@ test('returns sum for an multiple digit seprtaed by comas or delimeter in string
 
 // Test case of custom delimiter.
 test('returns sum for an multiple digit seprtaed by comas or delimeter in string', () => {
-  expect(add("//!\n1,2,3")).toBe(6);
+  expect(add("//;\n1;2;3")).toBe(6);
 });
