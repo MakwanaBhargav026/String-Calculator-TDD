@@ -47,7 +47,7 @@ This kata-based project solves the problem of summing numbers from a string with
 
 > Example outputs and test run preview:
 
-![Terminal Tests](./photos/img-1.png)  
+![Terminal Tests](https://github.com/MakwanaBhargav026/String-Calculator-TDD/blob/master/photos/img-1.png)  
 *✅ All unit tests passing via Jest*
 
 ---
