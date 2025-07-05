@@ -1,54 +1,89 @@
 function add(numbers) {
   if (handleEmptyInput(numbers)) return 0;
-  const { delimiter, numberString } = extractDelimiter(numbers);
-  const numberList = parseNumbers(numberString, delimiter);
-  checkForNegatives(numberList);
-  const filtered = numberList.filter(n => n <= 1000); // ✅ Ignore >1000
-  return filtered.reduce((sum, n) => sum + n, 0);
+
+  const { delimiter, numberString, isDashDelimiter } = extractDelimiter(numbers);
+
+  const tokens = isDashDelimiter
+    ? smartSplitDashAware(numberString)
+    : numberString.split(delimiter); // already a regex
+
+  const parsed = tokens
+    .map(n => parseInt(n.trim(), 10))
+    .filter(n => !isNaN(n));
+
+  checkForNegatives(parsed);
+
+  const valid = parsed.filter(n => n <= 1000);
+  return valid.reduce((sum, n) => sum + n, 0);
 }
 
-//Handles empty string
+//Empty input
 function handleEmptyInput(numbers) {
   return numbers.trim() === "";
 }
 
-//Extracts custom delimiter if present
+//Extract delimiter from string
 function extractDelimiter(input) {
   const defaultDelimiter = /,|\n/;
 
   if (input.startsWith("//")) {
     const parts = input.split("\n");
-    const rawDelimiter = parts[0].slice(2); // after //
-    const escaped = escapeRegExp(rawDelimiter);
-    const customDelimiter = new RegExp(escaped);
-    const restOfString = parts.slice(1).join("\n");
+    const header = parts[0].slice(2);
+    const rest = parts.slice(1).join("\n");
 
+    // Case: multi-length delimiter: //[***]
+    const bracketMatch = header.match(/^\[(.+)]$/);
+    if (bracketMatch) {
+      const raw = escapeRegExp(bracketMatch[1]);
+      return {
+        delimiter: new RegExp(raw),
+        numberString: rest,
+        isDashDelimiter: false
+      };
+    }
+
+    // Case: single-char delimiter like `//-`
+    const raw = escapeRegExp(header);
     return {
-      delimiter: customDelimiter,
-      numberString: restOfString,
+      delimiter: new RegExp(raw),
+      numberString: rest,
+      isDashDelimiter: header === "-"
     };
   }
 
   return {
     delimiter: defaultDelimiter,
     numberString: input,
+    isDashDelimiter: false
   };
 }
 
-//Escapes RegExp-special characters
+//Escape regex chars
 function escapeRegExp(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-//Parses and filters valid integers
-function parseNumbers(numbers, delimiter) {
-  return numbers
-    .split(delimiter)
-    .map(num => parseInt(num.trim(), 10))
-    .filter(n => !isNaN(n));
+//Custom split logic for `-` delimiter with negative detection
+function smartSplitDashAware(str) {
+  const result = [];
+  let current = '';
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === '-' && str[i + 1] === '-') {
+      if (current) result.push(current);
+      current = '-';
+      i++; // skip next -
+    } else if (str[i] === '-') {
+      if (current) result.push(current);
+      current = '';
+    } else {
+      current += str[i];
+    }
+  }
+  if (current) result.push(current);
+  return result;
 }
 
-//Throws if any negative numbers are found
+//Throw if any negative number
 function checkForNegatives(numbers) {
   const negatives = numbers.filter(n => n < 0);
   if (negatives.length > 0) {
