@@ -48,7 +48,7 @@ function escapeRegExp(str) {
 }
 
 // Converts string to array of numbers
-function parseNumbers(numbers, delimiter) {
+function parseNumbers(numbers, delimiter ) {
   return numbers
     .split(delimiter)
     .map(num => parseInt(num, 10));
